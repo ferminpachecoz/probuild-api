@@ -22,25 +22,27 @@ exports.handleDialogflowRequest = (req, res) => {
     }
 
     if (intentName === "Consulta_Tipo_Maquina") {
-      const type = req.body.queryResult.parameters.tipo_maquina;
+      let type = req.body.queryResult.parameters.tipo_maquina;
   
       console.log("🔍 Tipo de máquina recibido desde Dialogflow:", type);
   
-      const filteredMachines = machines.filter(m => m.category.toLowerCase() === type.toLowerCase());
+      // Filtrar las máquinas según el tipo en lugar de la categoría
+      const filteredMachines = machines.filter(m => m.type.toLowerCase().includes(type.toLowerCase()));
   
       console.log("📌 Máquinas encontradas:", filteredMachines);
   
       if (filteredMachines.length > 0) {
           const machineNames = filteredMachines.map(m => m.title).join(", ");
           return res.json({
-              fulfillmentText: `Las máquinas disponibles para ${type} son: ${machineNames}.`
+              fulfillmentText: `Las máquinas disponibles del tipo ${type} son: ${machineNames}.`
           });
       } else {
           return res.json({
               fulfillmentText: `No encontré máquinas del tipo "${type}".`
           });
       }
-  }
+    }
+  
   
 
     if (intentName === "Consulta_Pack") {
